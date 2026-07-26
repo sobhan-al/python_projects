@@ -8,24 +8,26 @@ from selenium.webdriver.common.by import By
 
 
 driver = webdriver.Chrome()
-# url = "https://divar.ir/s/isfahan/real-estate?map_interaction=search_this_area_disabled"
 url = "https://divar.ir/s/isfahan/jobs"
 driver.get(url)
 last_height = driver.execute_script("return document.body.scrollHeight")
 
 
-file_path = Path(__file__).parent / "job_datas.txt"
-f = open(file_path,'w',encoding='utf8')
+f = open("job_datas.txt",'w',encoding='utf8')
 
 
+job_counter = 0
 
-def details(workss):
-    print(len(workss))
+def details(jobs):
+    global job_counter
+    print(len(jobs))
+    
     list_details = []
-    for work in workss:
+    for work in jobs:
 
         list_test = []
-        title = work.find_element(By.CSS_SELECTOR, "h2.kt-post-card__title").text
+        job_counter+=1
+        title = str(job_counter)+"."+work.find_element(By.CSS_SELECTOR, "h2.kt-post-card__title").text
         list_test.append(title)
         price = work.find_elements(By.CSS_SELECTOR, "div.kt-post-card__description")
         for i in price:
@@ -39,23 +41,24 @@ def details(workss):
 
 while True:
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-    time.sleep(3)
+    time.sleep(1)
     new_height = driver.execute_script("return document.body.scrollHeight")
-    # works = driver.find_elements(By.CSS_SELECTOR, "div.kt-post-card__info")
-    works = driver.find_element(By.CSS_SELECTOR, "div.post-list-eb5625555555")
-    print(works.text)
-    time.sleep(5)
-    works2 = works.find_elements(By.CSS_SELECTOR, "div.post-list__items-container-e44b2")
-    works3 = works.find_elements(By.CSS_SELECTOR, "div.widget-col-d2306")
-    jobs = details(works3)
+
+    works = driver.find_elements(By.CSS_SELECTOR, "div.widget-col-d2306")
+    jobs = details(works)
     for job in jobs:
-        for str in job:
-            f.write(str+"\n")
-        f.write("\n____________________\n")    
+        for text in job:
+            f.write(text+"\n")
+        f.write("\n____________________________\n\n")    
 
-    if last_height == new_height:
-
-        break
+    if last_height == new_height:   
+        try: 
+            # button = driver.find_element(By.CSS_SELECTOR, "div.post-list__bottom-container-cac2f")
+            button = driver.find_element(By.CSS_SELECTOR, "button.kt-button.kt-button--primary.kt-button--outlined.post-list__load-more-btn-be092")
+            button.click()
+            last_height = new_height
+        except:
+            break
     else:
         last_height = new_height
 
