@@ -1,8 +1,4 @@
-from bs4 import BeautifulSoup
-import requests
-import schedule
 import time
-from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -53,7 +49,6 @@ while True:
 
     if last_height == new_height:   
         try: 
-            # button = driver.find_element(By.CSS_SELECTOR, "div.post-list__bottom-container-cac2f")
             button = driver.find_element(By.CSS_SELECTOR, "button.kt-button.kt-button--primary.kt-button--outlined.post-list__load-more-btn-be092")
             button.click()
             last_height = new_height
@@ -63,14 +58,4 @@ while True:
         last_height = new_height
 
 
-
-
-
-
-
-
-
-
-
 f.close()
-
